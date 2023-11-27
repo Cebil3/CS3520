@@ -1,0 +1,370 @@
+# Data segment
+.data
+    annualCycle:   .word   2
+    menuHeader:     .asciiz "\nMAMCHOBANE FARRMING SYSTEM SIMULATION\n"
+    menuOptions:    .asciiz "1. Winter Crop Management\n2. Summer Crop Management\n3. Intercropping and Relay Cropping System\n4. Soil Fertility and Moisture Management\n5 Crop Yield and Sustainability\n6. Run Annual Cycle\n7. exit\nEnter your choice: "
+    prompt_summer:   .asciiz "SUMMER CROP MANAGEMENT\n"
+    simulate_crop:   .asciiz "Simulating intercropping of maize, beans, pumpkin, sorghum, watermelons, and groundnuts in summer (August-October).\n"
+    harvesting:      .asciiz "Harvesting is scheduled for November-December.\n"
+    intercrop_msg:   .asciiz "Intercropping maize, beans, pumpkin, sorghum, watermelons, and groundnuts in summer...\n"
+    growth_msg:      .asciiz "Crops are growing during the summer season...\n"
+    harvest_msg:     .asciiz "Harvesting maize, beans, pumpkin, sorghum, watermelons, and groundnuts in November-December.\n"
+    prompt_winter:  .asciiz "WINTER CROP MANAGEMENT\n"
+    planting_msg:   .asciiz "Simulating planting of wheat, peas, and potatoes in winter (April-May).\n"
+    harvesting_msg: .asciiz "Harvesting is scheduled for January-March.\n"
+    plant_msg:      .asciiz "Planting wheat, peas, and potatoes in winter...\n"
+    growth_msg:     .asciiz "Crops are growing during the winter season...\n"
+    harvest_wheat:  .asciiz "Harvesting wheat, peas, and potatoes in January-March.\n
+	str1:   .asciiz "SOIL FERTILITY AND MOISTURE MANAGEMENT\n"
+	str2:   .asciiz "Simulating soil fertility and moisture management.\n"
+	str3:   .asciiz "Applying organic manure to improve soil fertility...\n"
+	str4:   .asciiz "Adding compost and nutrients to enhance the soil...\n"
+	str5:   .asciiz "Irrigating the fields to ensure optimal moisture levels...\n"
+	str6:   .asciiz "Monitoring soil moisture content regularly...\n"
+
+
+
+# Text segment
+.text
+    main:
+       li $v0, 4                   # syscall: print_str
+       la $a0, menuHeader          # Load menu header string address
+       syscall
+	   
+	   li $v0, 10                  # End main
+	   syscall
+
+    menu:
+       li $v0, 4                   # syscall: print_str
+       la $a0, menuOptions         # Load menu options string address
+       syscall
+
+       li $v0, 5                   # syscall: read_int
+       syscall
+       move $t0, $v0               # Store user choice in $t0
+	   
+	   
+
+    # Process user choice
+       beq $t0, 1, winterCropManagement
+       beq $t0, 2, summerCropManagement
+       beq $t0, 3, intercroppingAndRelayCropping
+       beq $t0, 4, soilFertilityAndMoistureManagement
+       beq $t0, 5, calculateCropYield
+       beq $t0, 6, simulateSustainablePractices
+       beq $t0, 7, exitProgram
+       j menu
+	   
+	   li $v0, 10
+	   syscall
+
+    winterCropManagement:
+	    li $v0, 4
+	    la 
+        j menu
+
+    summerCropManagement:
+	
+        j menu
+
+    intercroppingAndRelayCropping:
+	
+        j menu
+
+    soilFertilityAndMoistureManagement:
+	
+        j menu
+
+    calculateCropYield:
+	
+    # Assuming $f12 = intercroppingFactor, $f14 = soilFertilityFactor, $f16 = moistureFactor
+	# Assuming fixed point representation with 2 decimal places for yield
+
+		calculateCropYield:
+			# Load constants for crop yields
+			li $t0, 100     # Constant for wheat
+			li $t1, 80      # Constant for peas
+			li $t2, 120     # Constant for potatoes
+			li $t3, 150     # Constant for maize
+			li $t4, 90      # Constant for beans
+			li $t5, 60      # Constant for pumpkin
+			li $t6, 130     # Constant for sorghum
+			li $t7, 75      # Constant for watermelons
+			li $t8, 110     # Constant for groundnuts
+
+			# Calculate yields
+			mul.d $f2, $f12, $f14         # intercroppingFactor * soilFertilityFactor
+			mul.d $f2, $f2, $f16          # intercroppingFactor * soilFertilityFactor * moistureFactor
+
+			mul.d $f10, $f2, $f0          # wheatYield = 100 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f11, $f2, $f1          # peasYield = 80 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f12, $f2, $f2          # potatoesYield = 120 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f13, $f2, $f3          # maizeYield = 150 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f14, $f2, $f4          # beansYield = 90 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f15, $f2, $f5          # pumpkinYield = 60 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f16, $f2, $f6          # sorghumYield = 130 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f17, $f2, $f7          # watermelonsYield = 75 * intercroppingFactor * soilFertilityFactor * moistureFactor
+			mul.d $f18, $f2, $f8          # groundnutsYield = 110 * intercroppingFactor * soilFertilityFactor * moistureFactor
+
+			# Display simulated yields
+			li $v0, 2                   # syscall: print_double
+			mov.d $f12, $f10            # Load wheatYield
+			syscall
+			li $v0, 4                   # syscall: print_str
+			la $a0, " kg/ha\n"
+			syscall
+
+			li $v0, 2                   # syscall: print_double
+			mov.d $f12, $f11            # Load peasYield
+			syscall
+			li $v0, 4                   # syscall: print_str
+			la $a0, " kg/ha\n"
+			syscall
+
+			jr $ra
+
+        j menu
+
+    simulateSustainablePractices:
+	
+        j menu
+	
+
+
+		# Assuming $a0 = rows, $a1 = columns
+		# Assuming ASCII representation where '#' is 35 and ' ' is 32
+
+	# Assuming ASCII representation where '#' is 35, '*' is 42, '~' is 126, and newline is 10
+
+	# void maize_beans(int rows, int columns)
+	maize_beans:
+		# Initialize loop counters
+		li $t0, 0          # i (outer loop)
+		li $t1, 0          # j (inner loop)
+
+	outer_loop_maize_beans:
+		# Check if i < rows
+		bge $t0, $a0, end_maize_beans
+
+		inner_loop_maize_beans:
+			# Check if j < columns
+			bge $t1, $a1, next_row_maize_beans
+
+			# Print '#' character
+			li $v0, 11         # syscall: print_char
+			li $a0, 35         # ASCII code for '#'
+			syscall
+
+			# Print ' ' character
+			li $v0, 11         # syscall: print_char
+			li $a0, 32         # ASCII code for ' '
+			syscall
+
+			# Print '*' character
+			li $v0, 11         # syscall: print_char
+			li $a0, 42         # ASCII code for '*'
+			syscall
+
+			# Increment inner loop counter (j)
+			addi $t1, $t1, 1
+			j inner_loop_maize_beans
+
+		next_row_maize_beans:
+		# Print newline character
+		li $v0, 11             # syscall: print_char
+		li $a0, 10             # ASCII code for newline
+		syscall
+
+		# Reset inner loop counter (j)
+		li $t1, 0
+
+		# Increment outer loop counter (i)
+		addi $t0, $t0, 1
+		j outer_loop_maize_beans
+
+	end_maize_beans:
+		jr $ra
+
+
+	# void maize(int rows, int columns)
+	maize:
+		# Initialize loop counters
+		li $t0, 0          # i (outer loop)
+		li $t1, 0          # j (inner loop)
+
+	outer_loop_maize:
+		# Check if i < rows
+		bge $t0, $a0, end_maize
+
+		inner_loop_maize:
+			# Check if j < columns
+			bge $t1, $a1, next_row_maize
+
+			# Print '#' character
+			li $v0, 11         # syscall: print_char
+			li $a0, 35         # ASCII code for '#'
+			syscall
+
+			# Print ' ' character
+			li $v0, 11         # syscall: print_char
+			li $a0, 32         # ASCII code for ' '
+			syscall
+
+			# Increment inner loop counter (j)
+			addi $t1, $t1, 1
+			j inner_loop_maize
+
+		next_row_maize:
+		# Print newline character
+		li $v0, 11             # syscall: print_char
+		li $a0, 10             # ASCII code for newline
+		syscall
+
+		# Reset inner loop counter (j)
+		li $t1, 0
+
+		# Increment outer loop counter (i)
+		addi $t0, $t0, 1
+		j outer_loop_maize
+
+	end_maize:
+		jr $ra
+
+
+	# void afterHarvest(int rows, int columns)
+	afterHarvest:
+		# Initialize loop counters
+		li $t0, 0          # i (outer loop)
+		li $t1, 0          # j (inner loop)
+
+	outer_loop_afterHarvest:
+		# Check if i < rows
+		bge $t0, $a0, end_afterHarvest
+
+		inner_loop_afterHarvest:
+			# Check if j < columns
+			bge $t1, $a1, next_row_afterHarvest
+
+			# Print "~~" characters followed by newline
+			li $v0, 4          # syscall: print_str
+			la $a0, "~~\n"
+			syscall
+
+			# Increment inner loop counter (j)
+			addi $t1, $t1, 1
+			j inner_loop_afterHarvest
+
+		next_row_afterHarvest:
+		# Reset inner loop counter (j)
+		li $t1, 0
+
+		# Increment outer loop counter (i)
+		addi $t0, $t0, 1
+		j outer_loop_afterHarvest
+
+	end_afterHarvest:
+		jr $ra
+
+   
+	summerCropManagement:
+		# Print "SUMMER CROP MANAGEMENT" message
+		li $v0, 4               # syscall: print_str
+		la $a0, prompt_summer   # Load address of the string
+		syscall
+
+		# Print "Simulating intercropping..." message
+		li $v0, 4               # syscall: print_str
+		la $a0, simulate_crop   # Load address of the string
+		syscall
+
+		# Print "Harvesting is scheduled..." message
+		li $v0, 4               # syscall: print_str
+		la $a0, harvesting      # Load address of the string
+		syscall
+
+		# Print "Intercropping maize..." message
+		li $v0, 4               # syscall: print_str
+		la $a0, intercrop_msg   # Load address of the string
+		syscall
+
+		# Print "Crops are growing..." message
+		li $v0, 4               # syscall: print_str
+		la $a0, growth_msg      # Load address of the string
+		syscall
+
+		# Print "Harvesting maize..." message
+		li $v0, 4               # syscall: print_str
+		la $a0, harvest_msg     # Load address of the string
+		syscall
+
+		# Exit program
+		li $v0, 10              # syscall: exit
+		syscall
+		
+		
+
+	winterCropManagement:
+		# Print "WINTER CROP MANAGEMENT" message
+		li $v0, 4             # syscall: print_str
+		la $a0, prompt_winter # Load address of the string
+		syscall
+
+		# Print "Simulating planting..." message
+		li $v0, 4             # syscall: print_str
+		la $a0, planting_msg  # Load address of the string
+		syscall
+
+		# Print "Harvesting is scheduled..." message
+		li $v0, 4             # syscall: print_str
+		la $a0, harvesting_msg# Load address of the string
+		syscall
+
+		# Print "Planting wheat..." message
+		li $v0, 4             # syscall: print_str
+		la $a0, plant_msg     # Load address of the string
+		syscall
+
+		# Print "Crops are growing..." message
+		li $v0, 4             # syscall: print_str
+		la $a0, growth_msg    # Load address of the string
+		syscall
+
+		# Print "Harvesting wheat..." message
+		li $v0, 4             # syscall: print_str
+		la $a0, harvest_wheat  # Load address of the string
+		syscall
+    
+	
+
+
+	soilFertility:
+		# Print "SOIL FERTILITY AND MOISTURE MANAGEMENT"
+		li $v0, 4               # system call for print_str
+		la $a0, str1            # load address of the string
+		syscall
+
+		# Print "Simulating soil fertility and moisture management."
+		li $v0, 4               # system call for print_str
+		la $a0, str2            # load address of the string
+		syscall
+
+		# Print "Applying organic manure to improve soil fertility..."
+		li $v0, 4               # system call for print_str
+		la $a0, str3            # load address of the string
+		syscall
+
+		# Print "Adding compost and nutrients to enhance the soil..."
+		li $v0, 4               # system call for print_str
+		la $a0, str4            # load address of the string
+		syscall
+
+		# Print "Irrigating the fields to ensure optimal moisture levels..."
+		li $v0, 4               # system call for print_str
+		la $a0, str5            # load address of the string
+		syscall
+
+		# Print "Monitoring soil moisture content regularly..."
+		li $v0, 4               # system call for print_str
+		la $a0, str6            # load address of the string
+		syscall
+
